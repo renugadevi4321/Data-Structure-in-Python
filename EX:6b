@@ -1,0 +1,46 @@
+def precedence(op):
+if op in (&#39;+&#39;, &#39;-&#39;):
+return 1
+if op in (&#39;*&#39;, &#39;/&#39;):
+return 2
+if op == &#39;^&#39;:
+return 3
+return 0
+def infix_to_postfix(exp):
+stack = []
+result = &quot;&quot;
+for ch in exp:
+if ch.isalnum():
+result += ch
+elif ch == &#39;(&#39;:
+stack.append(ch)
+elif ch == &#39;)&#39;:
+while stack and stack[-1] != &#39;(&#39;:
+result += stack.pop()
+stack.pop()
+else:
+while stack and stack[-1] != &#39;(&#39; and precedence(ch) &lt;= precedence(stack[-1]):
+result += stack.pop()
+stack.append(ch)
+while stack:
+result += stack.pop()
+return result
+
+def infix_to_prefix(exp):
+exp = exp[::-1]
+for i in range(len(exp)):
+if exp[i] == &#39;(&#39;:
+exp = exp[:i] + &#39;)&#39; + exp[i+1:]
+elif exp[i] == &#39;)&#39;:
+exp = exp[:i] + &#39;(&#39; + exp[i+1:]
+return infix_to_postfix(exp)[::-1]
+exp = input(&quot;Enter infix expression: &quot;)
+print(&quot;1. Infix to Postfix&quot;)
+print(&quot;2. Infix to Prefix&quot;)
+choice = int(input(&quot;Enter your choice: &quot;))
+if choice == 1:
+print(&quot;Postfix:&quot;, infix_to_postfix(exp))
+elif choice == 2:
+print(&quot;Prefix:&quot;, infix_to_prefix(exp))
+else:
+print(&quot;Invalid choice&quot;)

@@ -1,0 +1,147 @@
+class Node:
+def __init__(self, entry_time, visitor_name):
+self.entry_time = entry_time
+self.visitor_name = visitor_name
+self.left = None
+self.right = None
+class BinaryTree:
+def __init__(self):
+self.root = None
+def insert(self, entry_time, visitor_name):
+new_node = Node(entry_time, visitor_name)
+if self.root is None:
+self.root = new_node
+else:
+self._insert_recursive(self.root, new_node)
+def _insert_recursive(self, current, new_node):
+if new_node.entry_time &lt; current.entry_time:
+if current.left is None:
+current.left = new_node
+else:
+self._insert_recursive(current.left, new_node)
+else:
+if current.right is None:
+current.right = new_node
+else:
+self._insert_recursive(current.right, new_node)
+def search(self, root, entry_time):
+if root is None or root.entry_time == entry_time:
+return root
+if entry_time &lt; root.entry_time:
+return self.search(root.left, entry_time)
+return self.search(root.right, entry_time)
+def delete(self, root, entry_time):
+if root is None:
+return root
+if entry_time &lt; root.entry_time:
+root.left = self.delete(root.left, entry_time)
+elif entry_time &gt; root.entry_time:
+root.right = self.delete(root.right, entry_time)
+else:
+if root.left is None:
+return root.right
+elif root.right is None:
+return root.left
+temp = self._min_value_node(root.right)
+root.entry_time = temp.entry_time
+root.visitor_name = temp.visitor_name
+root.right = self.delete(root.right, temp.entry_time)
+return root
+def _min_value_node(self, node):
+current = node
+while current.left is not None:
+current = current.left
+return current
+def count(self, root):
+if root is None:
+return 0
+return 1 + self.count(root.left) + self.count(root.right)
+
+def inorder(self, root):
+if root is not None:
+self.inorder(root.left)
+print(f&quot;Time: {root.entry_time} | Visitor:
+{root.visitor_name}&quot;)
+self.inorder(root.right)
+def preorder(self, root):
+if root is not None:
+print(f&quot;Time: {root.entry_time} | Visitor:
+{root.visitor_name}&quot;)
+self.preorder(root.left)
+self.preorder(root.right)
+def postorder(self, root):
+if root is not None:
+self.postorder(root.left)
+self.postorder(root.right)
+print(f&quot;Time: {root.entry_time} | Visitor:
+{root.visitor_name}&quot;)
+def display_logs(tree):
+print(&quot;\nCurrent Log Book Entries:&quot;)
+if tree.root is None:
+print(&quot;Log book is empty.&quot;)
+else:
+tree.inorder(tree.root)
+def main():
+tree = BinaryTree()
+while True:
+print(&quot;1. Insert Log Entry&quot;)
+print(&quot;2. Delete Log Entry&quot;)
+print(&quot;3. Search Log Entry&quot;)
+print(&quot;4. Traverse Log Entries&quot;)
+print(&quot;5. Count Total Entries&quot;)
+print(&quot;6. Exit&quot;)
+choice = input(&quot;Enter your choice (1-6): &quot;).strip()
+if choice == &#39;1&#39;:
+entry_time = input(&quot;Enter entry time: &quot;).strip()
+visitor_name = input(&quot;Enter visitor name: &quot;).strip()
+tree.insert(entry_time, visitor_name)
+print(&quot;Log entry added successfully!&quot;)
+display_logs(tree)
+elif choice == &#39;2&#39;:
+entry_time = input(&quot;Enter entry time to delete: &quot;).strip()
+if tree.search(tree.root, entry_time):
+tree.root = tree.delete(tree.root, entry_time)
+print(&quot;Log entry deleted successfully!&quot;)
+display_logs(tree)
+else:
+print(&quot;Log entry not found.&quot;)
+display_logs(tree)
+elif choice == &#39;3&#39;:
+entry_time = input(&quot;Enter entry time to search: &quot;).strip()
+result = tree.search(tree.root, entry_time)
+if result:
+print(f&quot;Found! Time: {result.entry_time} | Visitor:
+{result.visitor_name}&quot;)
+else:
+print(&quot;Log entry not found.&quot;)
+
+display_logs(tree)
+elif choice == &#39;4&#39;:
+print(&quot;\nChoose Traversal Type:&quot;)
+print(&quot;1. Inorder&quot;)
+print(&quot;2. Preorder&quot;)
+print(&quot;3. Postorder&quot;)
+t_choice = input(&quot;Enter traversal choices: &quot;).strip()
+if tree.root is None:
+print(&quot;No log entries found.&quot;)
+else:
+if t_choice == &#39;1&#39;:
+print(&quot;\n--- Inorder Traversal ---&quot;)
+tree.inorder(tree.root)
+elif t_choice == &#39;2&#39;:
+print(&quot;\n--- Preorder Traversal ---&quot;)
+tree.preorder(tree.root)
+elif t_choice == &#39;3&#39;:
+print(&quot;\n--- Postorder Traversal ---&quot;)
+tree.postorder(tree.root)
+else:
+print(&quot;Invalid traversal choice.&quot;)
+elif choice == &#39;5&#39;:
+total = tree.count(tree.root)
+print(f&quot;Total entries in log book: {total}&quot;)
+display_logs(tree)
+elif choice == &#39;6&#39;:
+print(&quot;Exiting program.&quot;)
+break
+else:
+print(&quot;Invalid choice. Please

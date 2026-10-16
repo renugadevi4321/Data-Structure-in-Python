@@ -1,0 +1,50 @@
+class MaxHeap:
+    def __init__(self):
+        self.heap = []
+    def insert(self, value):
+        self.heap.append(value)
+        i = len(self.heap) - 1
+        while i &gt; 0:
+            parent = (i - 1) // 2
+            if self.heap[parent] &gt;= self.heap[i]:
+                break
+            self.heap[parent], self.heap[i] = self.heap[i], self.heap[parent]
+            i = parent
+    def extract_max(self):
+        if len(self.heap) == 0:
+            print(&quot;Heap is empty&quot;)
+            return
+        max_value = self.heap[0]
+        self.heap[0] = self.heap[-1]
+        self.heap.pop()
+        i = 0
+        while 2 * i + 1 &lt; len(self.heap):
+            left = 2 * i + 1
+            right = 2 * i + 2
+            largest = left
+            if right &lt; len(self.heap) and self.heap[right] &gt; self.heap[left]:
+                largest = right
+            if self.heap[i] &gt;= self.heap[largest]:
+                break
+            self.heap[i], self.heap[largest] = \
+                self.heap[largest], self.heap[i]
+            i = largest
+        print(&quot;Maximum value:&quot;, max_value)
+    def peek(self):
+        if len(self.heap) == 0:
+            print(&quot;Heap is empty&quot;)
+        else:
+
+            print(&quot;Root:&quot;, self.heap[0])
+
+# Main program
+h = MaxHeap()
+n = int(input(&quot;Enter number of elements: &quot;))
+for i in range(n):
+    value = int(input(&quot;Enter value: &quot;))
+    h.insert(value)
+print(&quot;Max Heap:&quot;, h.heap)
+h.peek()
+h.extract_max()
+print(&quot;Heap after extraction:&quot;, h.heap)
+h.peek()

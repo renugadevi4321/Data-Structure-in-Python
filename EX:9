@@ -1,0 +1,238 @@
+class AVLNode:
+def __init__(self, enrollment_id, student_name, course_name):
+self.enrollment_id = enrollment_id
+self.student_name = student_name
+self.course_name = course_name
+self.height = 1
+self.left = None
+self.right = None
+
+class AVLTree:
+def __init__(self):
+self.root = None
+
+def height(self, node):
+return node.height if node else 0
+
+def balance_factor(self, node):
+return self.height(node.left) - self.height(node.right) if node else 0
+
+def update_height(self, node):
+node.height = 1 + max(self.height(node.left), self.height(node.right))
+
+def right_rotate(self, y):
+x = y.left
+T2 = x.right
+x.right = y
+y.left = T2
+
+self.update_height(y)
+self.update_height(x)
+return x
+
+def left_rotate(self, x):
+y = x.right
+T2 = y.left
+y.left = x
+x.right = T2
+self.update_height(x)
+self.update_height(y)
+return y
+
+def _insert(self, node, enrollment_id, student_name, course_name):
+if not node:
+return AVLNode(enrollment_id, student_name, course_name)
+if enrollment_id &lt; node.enrollment_id:
+node.left = self._insert(node.left, enrollment_id, student_name, course_name)
+elif enrollment_id &gt; node.enrollment_id:
+node.right = self._insert(node.right, enrollment_id, student_name, course_name)
+else:
+node.student_name = student_name
+node.course_name = course_name
+return node
+
+self.update_height(node)
+balance = self.balance_factor(node)
+
+if balance &gt; 1 and enrollment_id &lt; node.left.enrollment_id:
+return self.right_rotate(node)
+if balance &lt; -1 and enrollment_id &gt; node.right.enrollment_id:
+return self.left_rotate(node)
+if balance &gt; 1 and enrollment_id &gt; node.left.enrollment_id:
+node.left = self.left_rotate(node.left)
+return self.right_rotate(node)
+if balance &lt; -1 and enrollment_id &lt; node.right.enrollment_id:
+node.right = self.right_rotate(node.right)
+return self.left_rotate(node)
+
+return node
+
+def insert(self, enrollment_id, student_name, course_name):
+self.root = self._insert(self.root, enrollment_id, student_name, course_name)
+
+def _min_value_node(self, node):
+current = node
+while current.left:
+current = current.left
+return current
+
+def _delete(self, node, enrollment_id):
+if not node:
+return node
+if enrollment_id &lt; node.enrollment_id:
+
+node.left = self._delete(node.left, enrollment_id)
+elif enrollment_id &gt; node.enrollment_id:
+node.right = self._delete(node.right, enrollment_id)
+else:
+if not node.left:
+return node.right
+elif not node.right:
+return node.left
+temp = self._min_value_node(node.right)
+node.enrollment_id = temp.enrollment_id
+node.student_name = temp.student_name
+node.course_name = temp.course_name
+node.right = self._delete(node.right, temp.enrollment_id)
+
+if not node:
+return node
+
+self.update_height(node)
+balance = self.balance_factor(node)
+
+if balance &gt; 1 and self.balance_factor(node.left) &gt;= 0:
+return self.right_rotate(node)
+if balance &gt; 1 and self.balance_factor(node.left) &lt; 0:
+node.left = self.left_rotate(node.left)
+return self.right_rotate(node)
+if balance &lt; -1 and self.balance_factor(node.right) &lt;= 0:
+return self.left_rotate(node)
+
+if balance &lt; -1 and self.balance_factor(node.right) &gt; 0:
+node.right = self.right_rotate(node.right)
+return self.left_rotate(node)
+
+return node
+
+def delete(self, enrollment_id):
+self.root = self._delete(self.root, enrollment_id)
+
+def search_by_id(self, enrollment_id):
+curr = self.root
+while curr:
+if enrollment_id == curr.enrollment_id:
+return curr
+elif enrollment_id &lt; curr.enrollment_id:
+curr = curr.left
+else:
+curr = curr.right
+return None
+
+def search_by_name(self, student_name):
+results = []
+name_lower = student_name.lower()
+def _inorder(n):
+if n:
+_inorder(n.left)
+if n.student_name.lower() == name_lower:
+
+results.append(n)
+_inorder(n.right)
+_inorder(self.root)
+return results
+
+def traverse(self):
+res = []
+def _inorder(n):
+if n:
+_inorder(n.left)
+res.append((n.enrollment_id, n.student_name, n.course_name))
+_inorder(n.right)
+_inorder(self.root)
+return res
+
+def count(self):
+return len(self.traverse())
+
+def display_current(avl):
+print(&quot;\n&quot; + &quot;=&quot; * 50)
+print(f&quot;Total Enrollments: {avl.count()}&quot;)
+records = avl.traverse()
+print(&quot;Current Records (Sorted by Enrollment ID):&quot;)
+if not records:
+print(&quot; [No enrollments found]&quot;)
+else:
+for r in records:
+
+print(f&quot; ID: {r[0]} | Student: {r[1]} | Course: {r[2]}&quot;)
+print(&quot;=&quot; * 50)
+
+def main():
+avl = AVLTree()
+while True:
+display_current(avl)
+print(&quot;\nMenu:&quot;)
+print(&quot;1. Insert an enrollment record&quot;)
+print(&quot;2. Delete a record by enrollment ID&quot;)
+print(&quot;3. Search for a student enrollment (by ID or Name)&quot;)
+print(&quot;4. Traverse all enrollment records (sorted by ID)&quot;)
+print(&quot;5. Count total enrollments&quot;)
+print(&quot;6. Exit&quot;)
+
+choice = input(&quot;Enter choice (1-6): &quot;).strip()
+
+if choice == &#39;1&#39;:
+try:
+eid = int(input(&quot;Enter Enrollment ID (integer): &quot;))
+sname = input(&quot;Enter Student Name: &quot;).strip()
+cname = input(&quot;Enter Course Name: &quot;).strip()
+avl.insert(eid, sname, cname)
+print(&quot;-&gt; Record inserted successfully.&quot;)
+except ValueError:
+print(&quot;-&gt; Invalid ID format.&quot;)
+elif choice == &#39;2&#39;:
+
+try:
+eid = int(input(&quot;Enter Enrollment ID to delete: &quot;))
+avl.delete(eid)
+print(&quot;-&gt; Delete operation executed.&quot;)
+except ValueError:
+print(&quot;-&gt; Invalid ID format.&quot;)
+elif choice == &#39;3&#39;:
+stype = input(&quot;Search by (1) ID or (2) Name? &quot;).strip()
+if stype == &#39;1&#39;:
+try:
+eid = int(input(&quot;Enter Enrollment ID: &quot;))
+res = avl.search_by_id(eid)
+if res:
+print(f&quot;-&gt; Found: ID={res.enrollment_id}, Student={res.student_name},
+Course={res.course_name}&quot;)
+else:
+print(&quot;-&gt; Not found.&quot;)
+except ValueError:
+print(&quot;-&gt; Invalid ID format.&quot;)
+else:
+sname = input(&quot;Enter Student Name: &quot;).strip()
+res = avl.search_by_name(sname)
+if res:
+print(f&quot;-&gt; Found {len(res)} match(es):&quot;)
+for r in res:
+print(f&quot; ID={r.enrollment_id}, Student={r.student_name}, Course={r.course_name}&quot;)
+else:
+print(&quot;-&gt; Not found.&quot;)
+
+elif choice == &#39;4&#39;:
+records = avl.traverse()
+print(&quot;Sorted Traversal Sequence:&quot;, records)
+elif choice == &#39;5&#39;:
+print(f&quot;Total count is: {avl.count()}&quot;)
+elif choice == &#39;6&#39;:
+print(&quot;Exiting program.&quot;)
+break
+else:
+print(&quot;Invalid choice, try again.&quot;)
+input(&quot;\nPress Enter to continue...&quot;)
+
+if __name__ == &quot;__main__&quot;:
+main()

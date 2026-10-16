@@ -1,0 +1,54 @@
+class node:
+def __init__(self,data):
+self.data=data
+self.next=None
+n1=node(10)
+n2=node(20)
+n3=node(30)
+n1.next=n2
+n2.next=n3
+head=n1
+def display(head):
+temp=head
+while temp:
+print(temp.data)
+temp=temp.next
+print(&quot;None&quot;)
+print(&quot;Original linked list&quot;)
+display(head)
+print(&quot;insertion at beginning&quot;)
+n4=node(5)
+n4.next=n1
+head=n4
+display(head)
+print(&quot;insertion at middle&quot;)
+n5=node(25)
+temp=head
+while temp.data!=20:
+
+temp=temp.next
+n5.next=temp.next
+temp.next=n5
+display(head)
+print(&quot;insertion at end&quot;)
+n6=node(40)
+temp=head
+while temp.next:
+temp=temp.next
+temp.next=n6
+display(head)
+print(&quot;deletion at beginning&quot;)
+head=head.next
+display(head)
+print(&quot;deletion at middle&quot;)
+temp=head
+while temp.next.data!=25:
+temp=temp.next
+temp.next=temp.next.next
+display(head)
+print(&quot;deletion at end&quot;)
+temp=head
+while temp.next.next:
+temp=temp.next
+temp.next=None
+display(head)
